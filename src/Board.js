@@ -148,12 +148,77 @@
     // --------------------------------------------------------------
     //
     // test if a specific major diagonal on this board contains a conflict
+    // [
+    //   [0, 0, 1, 0],
+    //   [1, 1, 0, 1],
+    //   [0, 0, 0, 0],
+    //   [0, 0, 0, 0]
+    // ]
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
+      // 0 value - that's row 0, column 0
+      // all positive values - row 0, column arg
+      // colIndex - rowindex
+      // (col) 2 - (row) 0 = +2
+      // all negative values - row indexes
+      // (col) 0 - (row) 2 = -2
+      var board = this.rows();
+      var rowCount = 0;
+      var count = 0;
+      if (majorDiagonalColumnIndexAtFirstRow > 0) {
+        for (var i = majorDiagonalColumnIndexAtFirstRow; i < board.length; i++) {
+          if (board[rowCount][i] === 1){
+            count++;
+          }
+          rowCount++;
+          if (count > 1) {
+            return true;
+          }
+        }
+      } else if (majorDiagonalColumnIndexAtFirstRow < 0) {
+        var colCount = 0;
+        for (var i = (majorDiagonalColumnIndexAtFirstRow * (-1)); i < board.length; i++) {
+          if (board[i][colCount] === 1){
+            count++;
+          }
+          colCount++;
+          if (count > 1) {
+            return true;
+          }
+        }
+      } else {
+        for (var i = 0; i < board.length; i++) {
+          if (board[i][i] === 1) {
+            count++;
+          }
+          if (count > 1) {
+            return true;
+          }
+        }
+      }
       return false; // fixme
     },
 
+    // let's say the arg is 2 - row 0, column 2
+    // when I check a diagnoal, I'm moving by adding 1 to both row and column - so next spot is row 1, column 3
+    // when the column num is positive, I'm closer to running out of columns than rows
+
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
+      // check all maj diagonals on board
+      // call above function for each possible maj diagonal
+
+      // what is the total number of diagonal rows for a given table with size n?
+      // 2n - 3 <- works for all boards 3 and bigger
+      // start at negative value of length + 1, run through positive - 1
+      var board = this.rows();
+      var checkLoc;
+      for (var i = ((board.length * (-1)) + 1); i < (board.length - 1); i++) {
+        checkLoc = this.hasMajorDiagonalConflictAt(i);
+        if (checkLoc === true) {
+          return true;
+        }
+      }
+
       return false; // fixme
     },
 
