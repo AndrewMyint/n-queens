@@ -62,14 +62,14 @@
     },
 
 
-/*
+    /*
          _             _     _
      ___| |_ __ _ _ __| |_  | |__   ___ _ __ ___ _
     / __| __/ _` | '__| __| | '_ \ / _ \ '__/ _ (_)
     \__ \ || (_| | |  | |_  | | | |  __/ | |  __/_
     |___/\__\__,_|_|   \__| |_| |_|\___|_|  \___(_)
 
- */
+    */
     /*=========================================================================
     =                 TODO: fill in these Helper Functions                    =
     =========================================================================*/
@@ -77,14 +77,34 @@
     // ROWS - run from left to right
     // --------------------------------------------------------------
     //
+    // [
+    //   [0, 0, 0, 0],
+    //   [1, 1, 0, 0],
+    //   [0, 0, 0, 0],
+    //   [0, 0, 0, 0]
+    // ]
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
-      return false; // fixme
+      //fiter array to extract arr[i] === 1;
+      //check arr.length > 1
+      var length =  this.rows()[rowIndex].filter((elements) => elements === 1).length;
+      // [1,1,0,0] -> [1,1]
+      return length > 1 ? true : false;
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
-      return false; // fixme
+      // check all rows
+      // iterate over this.rows() -> nested arrays
+      var checkRow;
+      var board = this.rows();
+      for (var i = 0; i < board.length; i++) {
+        checkRow = this.hasRowConflictAt(i);
+        if (checkRow === true) {
+          return true;
+        }
+      }
+      return false;
     },
 
 
