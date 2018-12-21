@@ -15,18 +15,9 @@
 
 // base case - we hit the bottom-right position of the board (max row, max column)
 
-var board = new Board(4);
 
-var solution = 0;
-var checkWholeBoard = function(board, row) {
-// for each spot in row
-// for (var i = 0; i < board.length; i++)
-// place in col 0 <- the board is updated to have one piece on it
-  var columnConflictCheck = board.hasAnyColConflicts;
-  // check for conflict <- has any col or row conflict
-  if (columnConflictCheck) {
     // if there is conflict, then go to next spot in row
-  } else {
+
     /*
     if no conflict
     if nextRow !== (n - 1) <- if I'm on row 3, don't do recursion
@@ -35,23 +26,74 @@ var checkWholeBoard = function(board, row) {
     if nextRow === (n - 1) <- am I on the last row?
       increment solution++
     */
-  }
+
   // if we find one solution, will the whole function stop? or can we keep it going?
 
-};
 
 
 
 window.findNRooksSolution = function(n) {
-  var solution = undefined; //fixme
+  var solution = new Board({n : n}); //fixme
 
+  var returnFirstSolution = function(board, row) {
+    var currentRow = board.rows()[row];
+    // for each spot in row
+    for (var i = 0; i < currentRow.length; i++) {
+      board.togglePiece(row, i);
+      // place in col 0 <- the board is updated to have one piece on it
+      var columnConflictCheck = board.hasAnyColConflicts();
+      // check for conflict <- has any col or row conflict
+      if (columnConflictCheck) {
+        board.togglePiece(row, i);
+      } else {
+        var nextRow = row + 1;
+        if (nextRow === currentRow.length) {
+          // solutionCount++;
+          // board.togglePiece(row, i);
+          return;
+        } else {
+          returnFirstSolution(board, nextRow);
+          return;
+         // board.togglePiece(row, i);
+        }
+      }
+    }
+  };
+  returnFirstSolution(solution, 0);
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
-  return solution;
+  return solution.rows();
 };
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  var solutionCount = 0; //fixme
+  var board = new Board({n : n});
+
+  var checkWholeBoard = function(board, row) {
+    var currentRow = board.rows()[row];
+    // for each spot in row
+    for (var i = 0; i < currentRow.length; i++) {
+      board.togglePiece(row, i);
+      // place in col 0 <- the board is updated to have one piece on it
+      var columnConflictCheck = board.hasAnyColConflicts();
+      // check for conflict <- has any col or row conflict
+      if (columnConflictCheck) {
+        board.togglePiece(row, i);
+      } else {
+        var nextRow = row + 1;
+        if (nextRow === currentRow.length) {
+          solutionCount++;
+          board.togglePiece(row, i);
+        } else {
+          checkWholeBoard(board, nextRow);
+          board.togglePiece(row, i);
+        }
+      }
+    }
+  };
+
+  checkWholeBoard(board, 0);
+
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
