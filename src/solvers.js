@@ -69,25 +69,38 @@ window.countNRooksSolutions = function(n) {
   var solutionCount = 0; //fixme
   var board = new Board({n : n});
 
-  var checkWholeBoard = function(board, row) {
+  var checkWholeBoard = function(board, row, colObj) {
     var currentRow = board.rows()[row];
+    if (colObj === undefined) {
+      colObj = {};
+      for (var i = 0; i < currentRow.length; i++) {
+        colObj[i] = false;
+      }
+    }
     // for each spot in row
     for (var i = 0; i < currentRow.length; i++) {
-      board.togglePiece(row, i);
-      // place in col 0 <- the board is updated to have one piece on it
-      var columnConflictCheck = board.hasAnyColConflicts();
-      // check for conflict <- has any col or row conflict
-      if (columnConflictCheck) {
-        board.togglePiece(row, i);
+      if (colObj[i] === true) {
+        // nothing because I already know this column is occupied
       } else {
+        board.togglePiece(row, i);
+        colObj[i] = true;
+        // place in col 0 <- the board is updated to have one piece on it
+        // var columnConflictCheck = board.hasAnyColConflicts();
+        // check for conflict <- has any col or row conflict
+        // if (columnConflictCheck) {
+        //   board.togglePiece(row, i);
+        // } else {
         var nextRow = row + 1;
         if (nextRow === currentRow.length) {
           solutionCount++;
           board.togglePiece(row, i);
+          colObj[i] = false;
         } else {
-          checkWholeBoard(board, nextRow);
+          checkWholeBoard(board, nextRow, colObj);
           board.togglePiece(row, i);
+          colObj[i] = false;
         }
+        // }
       }
     }
   };
